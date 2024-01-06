@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.greivance_management_system">
    <application
-        android:label="greivance_management_system"
+        android:label="Greivance Management System"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
