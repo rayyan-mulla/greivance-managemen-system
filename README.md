@@ -1,4 +1,4 @@
-# greivance_management_system
+# grievance_management_system
 
 A new Flutter project.
 

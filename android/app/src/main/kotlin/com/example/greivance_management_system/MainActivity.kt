@@ -1,4 +1,4 @@
-package com.example.greivance_management_system
+package com.example.grievance_management_system
 
 import io.flutter.embedding.android.FlutterActivity
 
