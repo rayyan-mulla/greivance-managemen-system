@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 enum MobileVerification {
   Display_Mobile_Form_State,
@@ -30,6 +31,37 @@ class _LoginState extends State<Login> {
   String phoneNumberError;
 
   bool showLoading = false;
+
+  String verificationId;
+
+  FirebaseAuth _auth = FirebaseAuth.instance;
+
+  void signInWithPhoneAuthCredential(
+      PhoneAuthCredential phoneAuthCredential) async {
+    setState(() {
+      showLoading = true;
+    });
+
+    try {
+      final authCredential =
+          await _auth.signInWithCredential(phoneAuthCredential);
+
+      setState(() {
+        showLoading = false;
+      });
+
+      if (authCredential.additionalUserInfo.isNewUser) {
+        print("New User");
+      } else {
+        print("Existing User");
+      }
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        showLoading = false;
+      });
+      phoneNumberError = e.message;
+    }
+  }
 
   getMobileNumberWidget(context) {
     return ListView(
@@ -80,11 +112,34 @@ class _LoginState extends State<Login> {
                   if (phoneNumber.text.length < 10) {
                     phoneNumberError = "Phone Number must contain 10 Digits";
                   } else {
-                    showLoading = false;
-                    currentState =
-                        MobileVerification.Display_OTP_Verification_State;
+                    showLoading = true;
+                    return null;
                   }
                 });
+                await _auth.verifyPhoneNumber(
+                    phoneNumber: countryCode + phoneNumber.text,
+                    verificationCompleted: (phoneAuthCredential) async {
+                      setState(() {
+                        showLoading = false;
+                      });
+                    },
+                    verificationFailed: (FirebaseAuthException exception) {
+                      setState(() {
+                        showLoading = false;
+                      });
+                      if (exception.code == 'invalid-phone-number') {
+                        phoneNumberError = "Invalid Phone Number";
+                      }
+                    },
+                    codeSent: (verificationId, resendingToken) async {
+                      setState(() {
+                        showLoading = false;
+                        currentState =
+                            MobileVerification.Display_OTP_Verification_State;
+                        this.verificationId = verificationId;
+                      });
+                    },
+                    codeAutoRetrievalTimeout: (verificationId) async {});
               },
               child: Text('SEND OTP'),
             ),
@@ -270,6 +325,10 @@ class _LoginState extends State<Login> {
                     otpDigit5.text +
                     otpDigit6.text;
                 print(otp);
+                PhoneAuthCredential phoneAuthCredential =
+                    PhoneAuthProvider.credential(
+                        verificationId: verificationId, smsCode: otp);
+                signInWithPhoneAuthCredential(phoneAuthCredential);
               },
               child: Text('VERIFY'),
             ),
