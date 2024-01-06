@@ -1,13 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+enum MobileVerification {
+  Display_Mobile_Form_State,
+  Display_OTP_Verification_State,
+}
+
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
+  MobileVerification currentState =
+      MobileVerification.Display_Mobile_Form_State;
+
   final phoneNumber = TextEditingController();
+  final otpDigit1 = TextEditingController();
+  final otpDigit2 = TextEditingController();
+  final otpDigit3 = TextEditingController();
+  final otpDigit4 = TextEditingController();
+  final otpDigit5 = TextEditingController();
+  final otpDigit6 = TextEditingController();
+
+  String otp;
 
   String countryCode = "+91";
 
@@ -64,8 +80,9 @@ class _LoginState extends State<Login> {
                   if (phoneNumber.text.length < 10) {
                     phoneNumberError = "Phone Number must contain 10 Digits";
                   } else {
-                    showLoading = true;
-                    return null;
+                    showLoading = false;
+                    currentState =
+                        MobileVerification.Display_OTP_Verification_State;
                   }
                 });
               },
@@ -79,16 +96,204 @@ class _LoginState extends State<Login> {
     );
   }
 
+  getOTPVerificationWidget(context) {
+    final node = FocusScope.of(context);
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Container(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: Text(
+              'OTP Verification',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+            ),
+          ),
+          SizedBox(height: 20),
+          Center(
+            child: Text(
+              'Please Enter the OTP send to +91 ${phoneNumber.text}',
+              style: TextStyle(fontSize: 15, color: Colors.grey),
+            ),
+          ),
+          SizedBox(height: 60),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Flexible(
+                  child: Container(
+                child: TextFormField(
+                  controller: otpDigit1,
+                  maxLength: 1,
+                  onChanged: (value) {
+                    if (value.length == 1) node.nextFocus();
+                  },
+                  decoration: InputDecoration(
+                    counter: Offstage(),
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.all(8),
+                  ),
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
+                ),
+                width: 40,
+              )),
+              SizedBox(width: 10),
+              Flexible(
+                  child: Container(
+                child: TextFormField(
+                  controller: otpDigit2,
+                  maxLength: 1,
+                  onChanged: (value) {
+                    if (value.length == 1) node.nextFocus();
+                  },
+                  decoration: InputDecoration(
+                    counter: Offstage(),
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.all(8),
+                  ),
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
+                ),
+                width: 40,
+              )),
+              SizedBox(width: 10),
+              Flexible(
+                  child: Container(
+                child: TextFormField(
+                  controller: otpDigit3,
+                  maxLength: 1,
+                  onChanged: (value) {
+                    if (value.length == 1) node.nextFocus();
+                  },
+                  decoration: InputDecoration(
+                    counter: Offstage(),
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.all(8),
+                  ),
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
+                ),
+                width: 40,
+              )),
+              SizedBox(width: 10),
+              Flexible(
+                  child: Container(
+                child: TextFormField(
+                  controller: otpDigit4,
+                  maxLength: 1,
+                  onChanged: (value) {
+                    if (value.length == 1) node.nextFocus();
+                  },
+                  decoration: InputDecoration(
+                    counter: Offstage(),
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.all(8),
+                  ),
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
+                ),
+                width: 40,
+              )),
+              SizedBox(width: 10),
+              Flexible(
+                  child: Container(
+                child: TextFormField(
+                  controller: otpDigit5,
+                  maxLength: 1,
+                  onChanged: (value) {
+                    if (value.length == 1) node.nextFocus();
+                  },
+                  decoration: InputDecoration(
+                    counter: Offstage(),
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.all(8),
+                  ),
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
+                ),
+                width: 40,
+              )),
+              SizedBox(width: 10),
+              Flexible(
+                  child: Container(
+                child: TextFormField(
+                  controller: otpDigit6,
+                  maxLength: 1,
+                  onChanged: (value) {
+                    if (value.length == 1) node.nextFocus();
+                  },
+                  decoration: InputDecoration(
+                    counter: Offstage(),
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.all(8),
+                  ),
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
+                ),
+                width: 40,
+              )),
+            ],
+          ),
+          SizedBox(height: 60),
+          Container(
+            child: TextButton(
+              style: TextButton.styleFrom(
+                primary: Colors.white,
+                backgroundColor: Colors.lightBlueAccent[700],
+                textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+              onPressed: () {
+                otp = otpDigit1.text +
+                    otpDigit2.text +
+                    otpDigit3.text +
+                    otpDigit4.text +
+                    otpDigit5.text +
+                    otpDigit6.text;
+                print(otp);
+              },
+              child: Text('VERIFY'),
+            ),
+            width: double.infinity,
+            padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
+          )
+        ],
+      )),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
-          child: showLoading
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : getMobileNumberWidget(context)),
+        child: showLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : currentState == MobileVerification.Display_Mobile_Form_State
+                ? getMobileNumberWidget(context)
+                : getOTPVerificationWidget(context),
+      ),
     );
   }
 }
