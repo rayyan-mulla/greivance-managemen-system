@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:grievance_management_system/screens/registration/registration.dart';
 
 enum MobileVerification {
   Display_Mobile_Form_State,
@@ -51,7 +52,8 @@ class _LoginState extends State<Login> {
       });
 
       if (authCredential.additionalUserInfo.isNewUser) {
-        print("New User");
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => Registration()));
       } else {
         print("Existing User");
       }

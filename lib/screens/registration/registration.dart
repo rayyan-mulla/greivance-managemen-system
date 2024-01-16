@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -26,6 +28,28 @@ class _RegistrationState extends State<Registration> {
     "Information Technology",
     "Mechanical Engineering",
   ];
+
+  DatabaseReference _reference =
+      FirebaseDatabase.instance.reference().child('Users');
+
+  final user = FirebaseAuth.instance.currentUser;
+
+  void registerUser() {
+    String name = nameController.text;
+    String rollNumber = rollNumberController.text;
+    String email = emailController.text;
+
+    _reference.child(user.uid).set({
+      'name': name,
+      'roll_number': rollNumber,
+      'department': selectedDepartment,
+      'email': email,
+    });
+
+    setState(() {
+      showLoading = false;
+    });
+  }
 
   Future pickImage(ImageSource source) async {
     final pickedImage = await ImagePicker().pickImage(source: source);
@@ -173,6 +197,7 @@ class _RegistrationState extends State<Registration> {
                         TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                   ),
                   onPressed: () async {
+                    registerUser();
                     Navigator.push(
                         context,
                         MaterialPageRoute(
