@@ -20,7 +20,7 @@ class _HomeState extends State<Home> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Health Care'),
+          title: Text('Grievance Management System'),
           backgroundColor: Colors.lightBlueAccent[700],
         ),
         backgroundColor: Colors.white,
