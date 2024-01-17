@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:grievance_management_system/screens/home/home.dart';
 import 'package:grievance_management_system/screens/registration/registration.dart';
 
 enum MobileVerification {
@@ -55,7 +56,8 @@ class _LoginState extends State<Login> {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => Registration()));
       } else {
-        print("Existing User");
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => Home()));
       }
     } on FirebaseAuthException catch (e) {
       setState(() {
