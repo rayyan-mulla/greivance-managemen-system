@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grievance_management_system/screens/grievance/grievance_form.dart';
 
 class GrievanceStartScreen extends StatefulWidget {
   @override
@@ -54,7 +55,12 @@ class _GrievanceStartScreenState extends State<GrievanceStartScreen> {
                       textStyle:
                           TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => GrievanceForm()));
+                    },
                     child: Text('Initiate Complaint')),
               ),
             ],
