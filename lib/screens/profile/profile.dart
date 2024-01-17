@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:grievance_management_system/screens/login/login.dart';
 
@@ -7,6 +9,63 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  final _auth = FirebaseAuth.instance;
+
+  final user = FirebaseAuth.instance.currentUser;
+
+  DatabaseReference _reference =
+      FirebaseDatabase.instance.reference().child('Users');
+
+  String name = '';
+  String rollNumber = '';
+  String department = '';
+  String email = '';
+
+  @override
+  void initState() {
+    super.initState();
+
+    _reference
+        .child(user.uid)
+        .child('name')
+        .once()
+        .then((DataSnapshot snapshot) {
+      setState(() {
+        name = snapshot.value;
+      });
+    });
+
+    _reference
+        .child(user.uid)
+        .child('roll_number')
+        .once()
+        .then((DataSnapshot snapshot) {
+      setState(() {
+        rollNumber = snapshot.value;
+      });
+    });
+
+    _reference
+        .child(user.uid)
+        .child('department')
+        .once()
+        .then((DataSnapshot snapshot) {
+      setState(() {
+        department = snapshot.value;
+      });
+    });
+
+    _reference
+        .child(user.uid)
+        .child('email')
+        .once()
+        .then((DataSnapshot snapshot) {
+      setState(() {
+        email = snapshot.value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +94,7 @@ class _ProfileState extends State<Profile> {
                   style: TextStyle(color: Colors.black54),
                 ),
                 subtitle: Text(
-                  'John Doe',
+                  name,
                   style: TextStyle(
                     fontSize: 17,
                     color: Colors.black87,
@@ -49,7 +108,7 @@ class _ProfileState extends State<Profile> {
                   style: TextStyle(color: Colors.black54),
                 ),
                 subtitle: Text(
-                  '42315',
+                  rollNumber,
                   style: TextStyle(
                     fontSize: 17,
                     color: Colors.black87,
@@ -63,7 +122,7 @@ class _ProfileState extends State<Profile> {
                   style: TextStyle(color: Colors.black54),
                 ),
                 subtitle: Text(
-                  'Computer Engineering',
+                  department,
                   style: TextStyle(
                     fontSize: 17,
                     color: Colors.black87,
@@ -77,7 +136,7 @@ class _ProfileState extends State<Profile> {
                   style: TextStyle(color: Colors.black54),
                 ),
                 subtitle: Text(
-                  'john.doe@gmail.com',
+                  email,
                   style: TextStyle(
                     fontSize: 17,
                     color: Colors.black87,
@@ -90,6 +149,7 @@ class _ProfileState extends State<Profile> {
       )),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          await _auth.signOut();
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Login()));
         },
