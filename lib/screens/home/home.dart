@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grievance_management_system/screens/profile/profile.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -11,7 +12,7 @@ class _HomeState extends State<Home> {
   final tabs = [
     AddNewGrievance(),
     GrievanceReport(),
-    UserProfile(),
+    Profile(),
   ];
 
   @override
@@ -73,15 +74,6 @@ class GrievanceReport extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Text("Grievance Report"),
-    );
-  }
-}
-
-class UserProfile extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text("User Profile"),
     );
   }
 }
