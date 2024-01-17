@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grievance_management_system/screens/grievance/grievance_start_screen.dart';
 import 'package:grievance_management_system/screens/profile/profile.dart';
 
 class Home extends StatefulWidget {
@@ -10,7 +11,7 @@ class _HomeState extends State<Home> {
   int currentIndex = 0;
 
   final tabs = [
-    AddNewGrievance(),
+    GrievanceStartScreen(),
     GrievanceReport(),
     Profile(),
   ];
@@ -56,15 +57,6 @@ class _HomeState extends State<Home> {
           },
         ),
       ),
-    );
-  }
-}
-
-class AddNewGrievance extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text("Add new Grievance"),
     );
   }
 }
