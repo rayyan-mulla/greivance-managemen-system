@@ -47,6 +47,7 @@ class _GrievanceFormState extends State<GrievanceForm> {
         'title': title,
         'description': description,
         'category': selectedCategory,
+        'status': 'New Complaint',
         'date': formattedDate,
       };
 
