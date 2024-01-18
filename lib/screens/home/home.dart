@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grievance_management_system/screens/grievance/grievance_report.dart';
 import 'package:grievance_management_system/screens/grievance/grievance_start_screen.dart';
 import 'package:grievance_management_system/screens/profile/profile.dart';
 
@@ -57,15 +58,6 @@ class _HomeState extends State<Home> {
           },
         ),
       ),
-    );
-  }
-}
-
-class GrievanceReport extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text("Grievance Report"),
     );
   }
 }
