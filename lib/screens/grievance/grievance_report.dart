@@ -1,56 +1,70 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 
-class GrievanceReport extends StatelessWidget {
+class GrievanceReport extends StatefulWidget {
+  @override
+  _GrievanceReportState createState() => _GrievanceReportState();
+}
+
+class _GrievanceReportState extends State<GrievanceReport> {
+  final user = FirebaseAuth.instance.currentUser;
+  DatabaseReference _reference =
+      FirebaseDatabase.instance.reference().child('Grievances');
+
+  bool isLoading = true;
+  bool dataAvailable = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    DataSnapshot snapshot = await _reference.once();
+
+    bool hasData = snapshot.value != null;
+
+    setState(() {
+      isLoading = false;
+      dataAvailable = hasData;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: ListView(
-          children: [
-            buildGrievanceCard(
-              'Title 1',
-              'Description for grievance 1. This is a longer description to demonstrate the layout.',
-              'Category A',
-              '2022-01-01',
-              'Technical Issues',
-              'Under Process',
-            ),
-            buildGrievanceCard(
-              'Title 2',
-              'Description for grievance 2.',
-              'Category B',
-              '2022-01-02',
-              null,
-              'Rejected',
-            ),
-            buildGrievanceCard(
-              'Title 3 with a Very Long Name',
-              'Description for grievance 3. This is another long description to test the layout.',
-              'Category C',
-              '2022-01-03',
-              'Miscellaneous',
-              'Approved',
-            ),
-            buildGrievanceCard(
-              'Title 4',
-              'Description for grievance 4.',
-              'Category D',
-              '2022-01-04',
-              null,
-              'Affected',
-            ),
-            buildGrievanceCard(
-              'Title 5',
-              'Description for grievance 5. This is a new complaint description.',
-              'Category E',
-              '2022-01-05',
-              'Suggestions',
-              'New Complaint',
-            ),
-          ],
-        ),
-      ),
+      body: isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : dataAvailable
+              ? Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: FirebaseAnimatedList(
+                    query: _reference.child(user.uid),
+                    itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                        Animation<double> animation, int index) {
+                      if (snapshot.value == null) {
+                        return Container();
+                      } else {
+                        return buildGrievanceCard(
+                          snapshot.value['title'] ?? '',
+                          snapshot.value['description'] ?? '',
+                          snapshot.value['category'] ?? '',
+                          snapshot.value['date'] ?? '',
+                          snapshot.value['other_category'] ?? null,
+                          snapshot.value['status'] ?? '',
+                        );
+                      }
+                    },
+                  ),
+                )
+              : Center(
+                  child: Text("No Grievance Found"),
+                ),
     );
   }
 
@@ -107,7 +121,7 @@ class GrievanceReport extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      category,
+                      category ?? '',
                       style: TextStyle(
                         fontSize: 16,
                       ),
@@ -125,7 +139,7 @@ class GrievanceReport extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      date,
+                      date ?? '',
                       style: TextStyle(
                         fontSize: 16,
                       ),
@@ -143,7 +157,7 @@ class GrievanceReport extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      status,
+                      status ?? '',
                       style: TextStyle(
                         fontSize: 16,
                         color: statusColor,
@@ -176,7 +190,7 @@ class GrievanceReport extends StatelessWidget {
   }
 
   Color _getStatusColor(String status) {
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case 'under process':
         return Colors.blue;
       case 'rejected':
