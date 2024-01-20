@@ -92,7 +92,7 @@ class _GrievanceReportState extends State<GrievanceReport> {
             Text(
               title,
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
