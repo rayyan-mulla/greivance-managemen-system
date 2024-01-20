@@ -15,6 +15,7 @@ class _GrievanceReportState extends State<GrievanceReport> {
 
   bool isLoading = true;
   bool dataAvailable = false;
+  Map<String, Map<String, dynamic>> grievanceData = {};
 
   @override
   void initState() {
@@ -23,7 +24,7 @@ class _GrievanceReportState extends State<GrievanceReport> {
   }
 
   Future<void> _fetchData() async {
-    DataSnapshot snapshot = await _reference.once();
+    DataSnapshot snapshot = await _reference.child(user.uid).once();
 
     bool hasData = snapshot.value != null;
 
@@ -31,6 +32,15 @@ class _GrievanceReportState extends State<GrievanceReport> {
       isLoading = false;
       dataAvailable = hasData;
     });
+
+    if (hasData) {
+      grievanceData = Map<String, Map<String, dynamic>>.from(snapshot.value);
+    }
+  }
+
+  void deleteGrievance(String grievanceKey) {
+    _reference.child(user.uid).child(grievanceKey).remove();
+    _fetchData();
   }
 
   @override
@@ -50,7 +60,9 @@ class _GrievanceReportState extends State<GrievanceReport> {
                       if (snapshot.value == null) {
                         return Container();
                       } else {
+                        String grievanceKey = snapshot.key;
                         return buildGrievanceCard(
+                          grievanceKey,
                           snapshot.value['title'] ?? '',
                           snapshot.value['description'] ?? '',
                           snapshot.value['category'] ?? '',
@@ -69,6 +81,7 @@ class _GrievanceReportState extends State<GrievanceReport> {
   }
 
   Widget buildGrievanceCard(
+    String grievanceKey,
     String title,
     String description,
     String category,
@@ -187,7 +200,9 @@ class _GrievanceReportState extends State<GrievanceReport> {
             Row(
               children: [
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    // Handle edit button click
+                  },
                   icon: Icon(Icons.edit),
                   label: Text('Edit'),
                   style: ElevatedButton.styleFrom(
@@ -197,7 +212,33 @@ class _GrievanceReportState extends State<GrievanceReport> {
                 ),
                 Spacer(),
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text("Confirm Deletion"),
+                          content: Text(
+                              "Are you sure you want to delete this grievance?"),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text("Cancel"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                deleteGrievance(grievanceKey);
+                                Navigator.of(context).pop();
+                              },
+                              child: Text("Yes"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
                   icon: Icon(Icons.delete),
                   label: Text('Delete'),
                   style: ElevatedButton.styleFrom(
