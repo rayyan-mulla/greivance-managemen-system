@@ -183,6 +183,30 @@ class _GrievanceReportState extends State<GrievanceReport> {
                 ),
               ),
             ],
+            SizedBox(height: 16),
+            Row(
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: Icon(Icons.edit),
+                  label: Text('Edit'),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.blue,
+                    onPrimary: Colors.white,
+                  ),
+                ),
+                Spacer(),
+                ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: Icon(Icons.delete),
+                  label: Text('Delete'),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.red,
+                    onPrimary: Colors.white,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
