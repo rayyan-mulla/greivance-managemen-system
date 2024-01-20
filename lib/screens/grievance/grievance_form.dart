@@ -58,7 +58,7 @@ class _GrievanceFormState extends State<GrievanceForm> {
     }
   }
 
-  void registerUser() async {
+  void saveOrUpdateGrievance() async {
     if (_formKey.currentState.validate()) {
       String title = titleController.text;
       String description = descriptionController.text;
@@ -238,7 +238,7 @@ class _GrievanceFormState extends State<GrievanceForm> {
                   : Container(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: registerUser,
+                        onPressed: saveOrUpdateGrievance,
                         style: ElevatedButton.styleFrom(
                           primary: Colors.lightBlueAccent[700],
                           textStyle: TextStyle(
