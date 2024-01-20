@@ -4,18 +4,27 @@ import 'package:grievance_management_system/screens/grievance/grievance_start_sc
 import 'package:grievance_management_system/screens/profile/profile.dart';
 
 class Home extends StatefulWidget {
+  final int index;
+  Home({Key key, this.index = 0}) : super(key: key);
+
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  int currentIndex = 0;
+  int currentIndex;
 
   final tabs = [
     GrievanceStartScreen(),
     GrievanceReport(),
     Profile(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    currentIndex = widget.index;
+  }
 
   @override
   Widget build(BuildContext context) {

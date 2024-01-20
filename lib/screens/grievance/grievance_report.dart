@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:grievance_management_system/screens/grievance/grievance_form.dart';
 
 class GrievanceReport extends StatefulWidget {
   @override
@@ -201,7 +202,11 @@ class _GrievanceReportState extends State<GrievanceReport> {
               children: [
                 ElevatedButton.icon(
                   onPressed: () {
-                    // Handle edit button click
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                GrievanceForm(grievanceKey: grievanceKey)));
                   },
                   icon: Icon(Icons.edit),
                   label: Text('Edit'),

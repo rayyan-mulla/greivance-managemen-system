@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:grievance_management_system/screens/home/home.dart';
 
 class GrievanceForm extends StatefulWidget {
+  final String grievanceKey;
+  GrievanceForm({Key key, this.grievanceKey}) : super(key: key);
+
   @override
   _GrievanceFormState createState() => _GrievanceFormState();
 }
@@ -16,7 +20,7 @@ class _GrievanceFormState extends State<GrievanceForm> {
     "Hostel",
     "Faculty",
     "Infrastructure",
-    "Other",
+    "Other"
   ];
 
   TextEditingController titleController = TextEditingController();
@@ -31,6 +35,29 @@ class _GrievanceFormState extends State<GrievanceForm> {
 
   final user = FirebaseAuth.instance.currentUser;
 
+  @override
+  void initState() {
+    super.initState();
+    if (widget.grievanceKey != null) {
+      _fetchGrievanceData();
+    }
+  }
+
+  Future<void> _fetchGrievanceData() async {
+    DataSnapshot snapshot =
+        await _reference.child(user.uid).child(widget.grievanceKey).once();
+
+    if (snapshot.value != null) {
+      setState(() {
+        titleController.text = snapshot.value['title'];
+        descriptionController.text = snapshot.value['description'];
+        selectedCategory = snapshot.value['category'];
+        showOtherCategoryField = selectedCategory == 'Other';
+        otherCategoryController.text = snapshot.value['other_category'] ?? '';
+      });
+    }
+  }
+
   void registerUser() async {
     if (_formKey.currentState.validate()) {
       String title = titleController.text;
@@ -41,7 +68,13 @@ class _GrievanceFormState extends State<GrievanceForm> {
       String formattedDate =
           "${currentDate.day}-${currentDate.month}-${currentDate.year}";
 
-      DatabaseReference userReference = _reference.child(user.uid).push();
+      DatabaseReference userReference;
+
+      if (widget.grievanceKey != null) {
+        userReference = _reference.child(user.uid).child(widget.grievanceKey);
+      } else {
+        userReference = _reference.child(user.uid).push();
+      }
 
       Map<String, dynamic> data = {
         'title': title,
@@ -75,16 +108,27 @@ class _GrievanceFormState extends State<GrievanceForm> {
       selectedCategory = null;
       showOtherCategoryField = false;
 
+      String successMessage = widget.grievanceKey != null
+          ? 'Your grievance has been updated successfully.'
+          : 'Your grievance has been submitted successfully.';
+
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text("Success"),
-            content: Text("Your grievance has been submitted successfully."),
+            content: Text(successMessage),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
+                  if (widget.grievanceKey != null) {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => Home(index: 1),
+                      ),
+                    );
+                  }
                 },
                 child: Text("OK"),
               ),
@@ -99,7 +143,8 @@ class _GrievanceFormState extends State<GrievanceForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Grievance Form'),
+        title: Text(
+            widget.grievanceKey != null ? 'Edit Grievance' : 'Grievance Form'),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
@@ -156,7 +201,7 @@ class _GrievanceFormState extends State<GrievanceForm> {
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
-                    selectedCategory = value;
+                    selectedCategory = value as String;
                     showOtherCategoryField = value == 'Other';
                   });
                 },
@@ -199,7 +244,9 @@ class _GrievanceFormState extends State<GrievanceForm> {
                           textStyle: TextStyle(
                               fontSize: 15, fontWeight: FontWeight.bold),
                         ),
-                        child: Text('SUBMIT GRIEVANCE'),
+                        child: Text(widget.grievanceKey != null
+                            ? 'UPDATE GRIEVANCE'
+                            : 'SUBMIT GRIEVANCE'),
                       ),
                     ),
             ],
